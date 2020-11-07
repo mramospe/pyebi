@@ -23,12 +23,12 @@ namespace pyebi {
     /// Conversion of single precision floating point numbers
     template <> struct python_type<float> {
       static char const cid = 'f';
-      using type = double;
+      using type = float;
       static constexpr auto const pybuilder = PyFloat_FromDouble;
     };
     /// Conversion of double precision floating point numbers
     template <> struct python_type<double> {
-      static char const cid = 'f';
+      static char const cid = 'd';
       using type = double;
       static constexpr auto const pybuilder = PyFloat_FromDouble;
     };
