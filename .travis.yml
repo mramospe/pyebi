@@ -1,5 +1,9 @@
 language: python
 
+python:
+   - "3.7"
+   - "3.8"
+
 os: linux
 addons:
   apt:
@@ -7,16 +11,18 @@ addons:
       - ubuntu-toolchain-r-test
     packages:
       - g++-7
+      - cmake
 env:
   - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
 
 before_install:
   - eval "${MATRIX_EVAL}"
+  - cmake --version
   - pip install -r test/requirements.txt
 
 install:
-  - cmake -B build
-  - cmake --build build --target install -DINSTALL_TESTS=ON
+  - cmake -B build -DINSTALL_TESTS=ON
+  - cmake --build build --target install
 
 script:
-  - pytest -v
+  - pytest
