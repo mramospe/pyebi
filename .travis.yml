@@ -22,8 +22,10 @@ before_install:
 
 install:
   - mkdir build
-  - cmake -B build -DINSTALL_TESTS=ON
-  - cmake --build build --target install
+  - cd build
+  - cmake ../ -DINSTALL_TESTS=ON
+  - cmake --build . --target install
+  - cd ..
 
 script:
   - pytest
