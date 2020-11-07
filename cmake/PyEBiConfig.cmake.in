@@ -1,0 +1,4 @@
+@PACKAGE_INIT@
+
+include("@PROJECT_BINARY_DIR@/cmake/@PROJECT_NAME@/@PROJECT_NAME@Targets.cmake")
+check_required_components("@PROJECT_NAME@")

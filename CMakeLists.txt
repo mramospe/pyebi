@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0)
-project("PyEBI" VERSION 0.0.0
+project("PyEBi" VERSION 0.0.0
 DESCRIPTION "A header only c++ library to easy the definition of python bindings for C++ functions"
 LANGUAGES CXX)
 

@@ -2,7 +2,6 @@
 *.pyc
 .coverage
 build/
-cmake/
 docs*
 test/python/lib/*.so
 __pycache__
