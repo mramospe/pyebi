@@ -7,7 +7,7 @@
 
 void display(std::string const &name) { std::cout << name << std::endl; }
 
-BUILD_INTERFACE(display, "Display the input string");
+PYEBI_INTERFACE(display, "Display the input string");
 
 // Methods of the module
 static PyMethodDef SimpleMethods[] = {display_DEF, {NULL, NULL, 0, NULL}};

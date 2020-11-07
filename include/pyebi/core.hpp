@@ -10,7 +10,8 @@ namespace pyebi {
 
   namespace core {
 
-    /// Store argument values and determine the string used to parse python arguments
+    /// Store argument values and determine the string used to parse python
+    /// arguments
     template <class... Args> struct struct_of_args {
       static constexpr const char *chars =
           utils::merge_chars<types::python_type<Args>::cid...>::chars;
@@ -68,7 +69,7 @@ namespace pyebi {
   } // namespace core
 } // namespace pyebi
 
-#define BUILD_INTERFACE_FULL(FUNC, INTERFACE, DEF, DOC)                        \
+#define PYEBI_INTERFACE_FULL(FUNC, INTERFACE, DEF, DOC)                        \
   PyObject *INTERFACE(PyObject *Py_UNUSED(self), PyObject *args) {             \
     decltype(pyebi::core::function_input_f(&FUNC)) holder;                     \
     if (!parse_arguments(                                                      \
@@ -79,21 +80,21 @@ namespace pyebi {
   }                                                                            \
   static PyMethodDef DEF = {#FUNC, INTERFACE, METH_VARARGS, DOC};
 
-#define BUILD_INTERFACE_4_ARGS(FUNC, INTERFACE, DEF, DOC)                      \
-  BUILD_INTERFACE_FULL(FUNC, INTERFACE, DEF, DOC)
-#define BUILD_INTERFACE_3_ARGS(FUNC, DEF, DOC)                                 \
-  BUILD_INTERFACE_FULL(FUNC, FUNC##_INTERFACE, DOC)
-#define BUILD_INTERFACE_2_ARGS(FUNC, DOC)                                      \
-  BUILD_INTERFACE_FULL(FUNC, FUNC##_INTERFACE, FUNC##_DEF, DOC)
-#define BUILD_INTERFACE_1_ARGS(FUNC)                                           \
-  BUILD_INTERFACE_FULL(FUNC, FUNC##_INTERFACE, FUNC##_DEF, NULL)
+#define PYEBI_INTERFACE_4_ARGS(FUNC, INTERFACE, DEF, DOC)                      \
+  PYEBI_INTERFACE_FULL(FUNC, INTERFACE, DEF, DOC)
+#define PYEBI_INTERFACE_3_ARGS(FUNC, DEF, DOC)                                 \
+  PYEBI_INTERFACE_FULL(FUNC, FUNC##_INTERFACE, DOC)
+#define PYEBI_INTERFACE_2_ARGS(FUNC, DOC)                                      \
+  PYEBI_INTERFACE_FULL(FUNC, FUNC##_INTERFACE, FUNC##_DEF, DOC)
+#define PYEBI_INTERFACE_1_ARGS(FUNC)                                           \
+  PYEBI_INTERFACE_FULL(FUNC, FUNC##_INTERFACE, FUNC##_DEF, NULL)
 
 #define GET_5TH_ARG(ARG1, ARG2, ARG3, ARG4, ARG5, ...) ARG5
-#define BUILD_INTERFACE_VARGS(...)                                             \
-  GET_5TH_ARG(__VA_ARGS__, BUILD_INTERFACE_4_ARGS, BUILD_INTERFACE_3_ARGS,     \
-              BUILD_INTERFACE_2_ARGS, BUILD_INTERFACE_1_ARGS, )
+#define PYEBI_INTERFACE_VARGS(...)                                             \
+  GET_5TH_ARG(__VA_ARGS__, PYEBI_INTERFACE_4_ARGS, PYEBI_INTERFACE_3_ARGS,     \
+              PYEBI_INTERFACE_2_ARGS, PYEBI_INTERFACE_1_ARGS, )
 
 // Main macro to build the interface
-#define BUILD_INTERFACE(...) BUILD_INTERFACE_VARGS(__VA_ARGS__)(__VA_ARGS__)
+#define PYEBI_INTERFACE(...) PYEBI_INTERFACE_VARGS(__VA_ARGS__)(__VA_ARGS__)
 
 #endif
