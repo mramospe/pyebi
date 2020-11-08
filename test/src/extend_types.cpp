@@ -1,4 +1,4 @@
-#include "pyebi/core.hpp"
+#include "pyebi/api.hpp"
 
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
