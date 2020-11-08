@@ -1,7 +1,6 @@
 #ifndef PYTHON_EASY_BINDINGS_TYPES
 #define PYTHON_EASY_BINDINGS_TYPES
 #include <Python.h>
-#include <array>
 #include <cstddef>
 #include <string>
 #include <vector>

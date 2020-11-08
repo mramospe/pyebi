@@ -4,6 +4,7 @@
 #include <Python.h>
 
 #include <iostream>
+#include <vector>
 
 std::vector<int> return_same_vector_int(std::vector<int> const &v) { return v; }
 
