@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0)
-project("PyEBI" VERSION 0.0.0
+project("PyEBi" VERSION 0.0.0
 DESCRIPTION "A header only c++ library to easy the definition of python bindings for C++ functions"
 LANGUAGES CXX)
 
@@ -52,5 +52,6 @@ if(INSTALL_TESTS)
       add_library(${testname} SHARED ${testsourcefile})
       set_target_properties(${testname} PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/test/python/lib CXX_STANDARD 17 CXX_STANDARD_REQUIRED YES CXX_EXTENSIONS NO PREFIX "")
       target_link_libraries(${testname} PUBLIC ${PYTHON_LIBRARIES})
+      install(TARGETS ${testname} DESTINATION ${PROJECT_SOURCE_DIR}/test/python/lib)
     endforeach(testsourcefile ${TEST_SOURCES})
 endif(INSTALL_TESTS)
