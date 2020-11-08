@@ -104,8 +104,8 @@ struct my_tpl { T i; }
 
 PYEBI_REGISTER_TYPE(
     my_tpl<T>,
-    [] (T i) { return my_int{i}; },
-    , [] (my_tpl const& m) { ... }
+    [] (T i) { return my_tpl<T>{i}; },
+    , [] (my_tpl<T> const& m) { ... }
     , tpl T);
 ```
 In the first case, we simply take an integer and assign it to the value stored in `my_int`.
