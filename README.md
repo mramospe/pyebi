@@ -1,7 +1,7 @@
 Python Easy Bindings
 ====================
 
-[![Build Status](https://travis-ci.org/mramospe/SmartIt.svg?branch=master)](https://travis-ci.org/mramospe/pyebi)
+[![Build Status](https://travis-ci.org/mramospe/pyebi.svg?branch=master)](https://travis-ci.org/mramospe/pyebi)
 [![Documentation](https://img.shields.io/badge/documentation-link-blue.svg)](https://mramospe.github.io/pyebi)
 
 This header-only `C++` library offers several tools to expose other `C++` functions in python using its C-API.
