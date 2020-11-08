@@ -8,6 +8,20 @@ namespace pyebi {
     /// Hold a type
     template <class T> struct type_holder { using type = T; };
 
+    /// Get the type at a given index
+    template <std::size_t I, class T0, class... T> struct type_at;
+
+    template <std::size_t I, class T0, class... T> struct type_at {
+      using type = typename type_at<I - 1, T...>::type;
+    };
+
+    template <class T0, class... T> struct type_at<0, T0, T...> {
+      using type = T0;
+    };
+
+    template <std::size_t I, class... T>
+    using type_at_t = typename type_at<I, T...>::type;
+
     /// Merge the corresponding characters
     template <char... C> struct merge_chars {
       static constexpr const char chars[sizeof...(C) + 1] = {C..., '\0'};

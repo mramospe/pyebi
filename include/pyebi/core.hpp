@@ -46,25 +46,36 @@ namespace pyebi {
                                   std::make_index_sequence<sizeof...(Args)>{});
     }
 
+    template <std::size_t I, class... Args>
+    constexpr auto get_element(struct_of_args<Args...> const &sa) {
+      using type = types::python_type<utils::type_at_t<I, Args...>>;
+      if constexpr (std::is_same_v<
+                        utils::remove_cvref_t<typename type::py_c_type>,
+                        PyObject *>) {
+        return type::c_builder(std::get<I>(sa.values));
+      } else
+        return std::get<I>(sa.values);
+    }
+
     /// Call a function (implementation)
-    template <class Function, class... Input, size_t... I>
+    template <class Function, class... Args, size_t... I>
     PyObject *call_function_impl(Function f,
-                                 struct_of_args<Input...> const &args,
+                                 struct_of_args<Args...> const &args,
                                  std::index_sequence<I...>) {
       using output_type =
           types::python_type<typename decltype(function_output_f(f))::type>;
-      if constexpr (std::is_same_v<typename output_type::type, void>) {
-        f(std::get<I>(args.values)...);
+      if constexpr (std::is_same_v<typename output_type::py_c_type, void>) {
+        f(get_element<I>(args)...);
         Py_RETURN_NONE;
       } else
-        return output_type::pybuilder(f(std::get<I>(args.values)...));
+        return output_type::py_builder(f(get_element<I>(args)...));
     }
 
     /// Call a function
-    template <class Function, class... Input>
-    PyObject *call_function(Function f, struct_of_args<Input...> const &args) {
+    template <class Function, class... Args>
+    PyObject *call_function(Function f, struct_of_args<Args...> const &args) {
       return call_function_impl(f, args,
-                                std::make_index_sequence<sizeof...(Input)>{});
+                                std::make_index_sequence<sizeof...(Args)>{});
     }
   } // namespace core
 } // namespace pyebi
