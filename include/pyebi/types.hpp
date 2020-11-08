@@ -17,7 +17,7 @@ namespace pyebi {
 
     /// Base template to define a conversion from C++ to Python types
     template <class T> struct python_type;
-    /// Conversion of strings
+    /// Standard C++ strings
     template <> struct python_type<std::string> {
       static char const cid = 's';
       using py_c_type = const char *;
@@ -89,4 +89,17 @@ namespace pyebi {
     template <class T> using python_type_t = typename python_type<T>::py_c_type;
   } // namespace types
 } // namespace pyebi
+
+#define PYEBI_REGISTER_TYPE(TYPE, C_BUILDER, PY_BUILDER, ...)                  \
+  namespace pyebi {                                                            \
+    namespace types {                                                          \
+      template <__VA_ARGS__> struct python_type<TYPE> {                        \
+        static char const cid = 'O';                                           \
+        using py_c_type = PyObject *;                                          \
+        static constexpr auto const c_builder = C_BUILDER;                     \
+        static constexpr auto const py_builder = PY_BUILDER;                   \
+      };                                                                       \
+    }                                                                          \
+  }
+
 #endif
