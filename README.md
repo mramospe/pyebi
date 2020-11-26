@@ -70,10 +70,10 @@ The function `PYEBI_INTERFACE` creates a static `PyMethodDef` constant object fo
 In addition, a new interface function is created (which manages the python types and converts them to `C++` types), whose name is set to that of the input function with `_INTERFACE` appended.
 In addition the documentation of the string can be provided, as a string.
 It is possible to provide from one to four arguments, corresponding to:
-1 function
-2 function and documentation
-3 function, definition and documentation
-4 function, definition, interface and documentation
+1. function
+2. function and documentation
+3. function, definition and documentation
+4. function, definition, interface and documentation
 
 Similarly, it is possible to work with `std::vector` objects, so a function like
 ```cpp
@@ -241,10 +241,10 @@ method definition (set to `<class name>_<function name>_(INTERFACE|DEF)` by
 default), as well as the docstring.
 Similarly to `PYEBI_INTERFACE`, the arguments must be provided in any of the
 following ways:
-1 class, accessor, name, function
-2 class, accessor, name, function and documentation
-3 class, accessor, name, function, definition and documentation
-4 class, accessor, name, function, definition, interface and documentation
+4. class, accessor, name, function
+5. class, accessor, name, function and documentation
+6. class, accessor, name, function, definition and documentation
+7. class, accessor, name, function, definition, interface and documentation
 
 ### Registering a new type
 
