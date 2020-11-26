@@ -237,8 +237,8 @@ The first four are mandatory, and correspond to the python object, the accessor
 to the underlying member of the class, the function name and the pointer to the
 member function.
 Additionally you can provide the name of the interface and the name of the
-method definition (set to `<class name>_<function name>_(INTERFACE|DEF)`), as
-well as the docstring.
+method definition (set to `<class name>_<function name>_(INTERFACE|DEF)` by
+default), as well as the docstring.
 Similarly to `PYEBI_INTERFACE`, the arguments must be provided in any of the
 following ways:
 1 class, accessor, name, function
