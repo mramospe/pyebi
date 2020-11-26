@@ -22,7 +22,9 @@ namespace pyebi {
       static char const cid = 's';
       using py_c_type = const char *;
       static constexpr auto const c_builder = pystring_as_string;
-      static constexpr auto const py_builder = PyUnicode_FromString;
+      static constexpr auto const py_builder = [](std::string const &s) {
+        return PyUnicode_FromString(s.c_str());
+      };
     };
     /// Standard C strings
     template <> struct python_type<const char *> {
