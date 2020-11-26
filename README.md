@@ -4,7 +4,9 @@
 [![Documentation](https://img.shields.io/badge/documentation-link-blue.svg)](https://mramospe.github.io/pyebi)
 
 This header-only `C++` library offers several tools to expose other `C++` functions in python using its C-API.
-The package does not aim to provide a way to completely wrap the python C-API and offer a more handy interface, but rather simplifying the export of functions based on its signature.
+Unlike other libraries, like [boost::python](https://www.boost.org), this package does not aim at providing a way to completely wrap the python C-API, but rather simplifying the exposition of functions based on its signature.
+Therefore, a basic knowledge of the python C-API is needed.
+
 `PyEBi` currently supports the basic `C++` types, like `int`, `float`, `double`, `const char*` and `std::string`, as well as any `std::vector` instance constructed using the previous types.
 Python classes are converted to their corresponding `C++` types, and then the function is called with these arguments.
 Instances of the `std::vector` class are converted to python `list` objects and viceversa.
