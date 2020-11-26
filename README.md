@@ -241,10 +241,10 @@ method definition (set to `<class name>_<function name>_(INTERFACE|DEF)` by
 default), as well as the docstring.
 Similarly to `PYEBI_INTERFACE`, the arguments must be provided in any of the
 following ways:
-4. class, accessor, name, function
-5. class, accessor, name, function and documentation
-6. class, accessor, name, function, definition and documentation
-7. class, accessor, name, function, definition, interface and documentation
+1. class, accessor, name, function
+2. class, accessor, name, function and documentation
+3. class, accessor, name, function, definition and documentation
+4. class, accessor, name, function, definition, interface and documentation
 
 ### Registering a new type
 
