@@ -83,7 +83,7 @@ float sum_list(std::vector<float> const& v) {
 ```
 would work.
 
-### Exposing member functions of a `C++` wrapper
+### Exposing member functions for a `C++` wrapper
 
 This package also offers the possibility to define interfaces for member
 functions of certain classes.
@@ -240,7 +240,7 @@ Additionally you can provide the name of the interface and the name of the
 method definition (set to `<class name>_<function name>_(INTERFACE|DEF)`), as
 well as the docstring.
 Similarly to `PYEBI_INTERFACE`, the arguments must be provided in any of the
-following ways
+following ways:
 1 class, accessor, name, function
 2 class, accessor, name, function and documentation
 3 class, accessor, name, function, definition and documentation
