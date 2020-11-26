@@ -1,6 +1,6 @@
 language: python
-
 os: linux
+dist: xenial
 addons:
   apt:
     sources:
@@ -52,5 +52,5 @@ jobs:
         - sudo apt-get install -y clang-format
       install: " "
       script:
-        - clang-format -i $(find . -name "*.cpp") $(find . -name "*.hpp")
-	- $[ -z $(git diff)]
+        - scripts/format
+        - scripts/git-diff
