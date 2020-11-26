@@ -1,5 +1,4 @@
-Python Easy Bindings
-====================
+# Python Easy Bindings
 
 [![Build Status](https://travis-ci.org/mramospe/pyebi.svg?branch=master)](https://travis-ci.org/mramospe/pyebi)
 [![Documentation](https://img.shields.io/badge/documentation-link-blue.svg)](https://mramospe.github.io/pyebi)
@@ -10,8 +9,7 @@ The package does not aim to provide a way to completely wrap the python C-API an
 Python classes are converted to their corresponding `C++` types, and then the function is called with these arguments.
 Instances of the `std::vector` class are converted to python `list` objects and viceversa.
 
-Installation
-------------
+## Installation
 
 You can use the `PyEBi` package directly after downloading.
 Simply make sure you include the directory `include` at compile-time.
@@ -21,10 +19,12 @@ cmake -B <build directory>
 cmake --build <build directory> --target install
 ```
 
-Getting started
----------------
+## Getting started
 
-The process to export a function is the following:
+### Exposing a function in Python
+
+The most common use case of this package is exposing a `C++` function in `python`.
+The following snippet show how this can be achieved.
 ```cpp
 #include <pyebi/api.hpp>
 
@@ -83,8 +83,170 @@ float sum_list(std::vector<float> const& v) {
 ```
 would work.
 
-Registering a new type
-----------------------
+### Exposing member functions of a `C++` wrapper
+
+This package also offers the possibility to define interfaces for member
+functions of certain classes.
+The first thing it is needed is to create a `python` class to act as a wrapper
+around one (or more) `C++` classes.
+```cpp
+#include "pyebi/api.hpp"
+
+#define PY_SSIZE_T_CLEAN
+#include <Python.h>
+#include <iostream>
+#include <string>
+
+struct some_class {
+public:
+  some_class(int i, std::string s) : m_i{i}, m_s{s} {}
+  void set(int i, std::string s) {
+    m_i = i;
+    m_s = s;
+  }
+  int const &integer() const { return m_i; }
+  std::string const &string() const { return m_s; }
+
+private:
+  int m_i;
+  std::string m_s;
+};
+
+typedef struct {
+  PyObject_HEAD some_class *underlying_class;
+} py_some_class;
+
+static PyObject *py_some_class_new(PyTypeObject *type, PyObject *args,
+                                   PyObject *kwargs) {
+  py_some_class *self = (py_some_class *)type->tp_alloc(type, 0);
+
+  if (!self)
+    return NULL;
+
+  int i;
+  const char *s = "";
+
+  if (!PyArg_ParseTuple(args, "is", &i, &s))
+    return NULL;
+
+  self->underlying_class = new some_class(i, s);
+
+  return (PyObject *)self;
+}
+
+static void py_some_class_dealloc(PyObject *self) {
+  some_class *p = ((py_some_class *)self)->underlying_class;
+  if (p)
+    delete p;
+  Py_TYPE(self)->tp_free(self);
+}
+
+static int py_some_class_init(py_some_class *self, PyObject *args,
+                              PyObject *kwargs) {
+  int i;
+  const char *s = "";
+  if (!PyArg_ParseTuple(args, "is", &i, &s))
+    return -1;
+  self->underlying_class->set(i, s);
+  return 0;
+}
+
+PYEBI_MEMBER_INTERFACE(py_some_class, &py_some_class::underlying_class, integer,
+                       &some_class::integer)
+PYEBI_MEMBER_INTERFACE(py_some_class, &py_some_class::underlying_class, string,
+                       &some_class::string)
+
+static PyMethodDef py_some_class_methods[] = {
+    py_some_class_integer_DEF, py_some_class_string_DEF, {NULL, NULL, 0, NULL}};
+
+#pragma GCC diagnostic ignored "-Wmissing-field-initializers"
+static PyTypeObject py_some_class_type = {
+    PyVarObject_HEAD_INIT(NULL, 0) "classes.py_some_class",
+    sizeof(py_some_class),
+    0,
+    py_some_class_dealloc,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    Py_TPFLAGS_DEFAULT,
+    "py_some_class object",
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    py_some_class_methods,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    (initproc)py_some_class_init,
+    0,
+    py_some_class_new};
+#pragma GCC diagnostic pop
+
+// Methods of the module
+static PyMethodDef classesMethods[] = {{NULL, NULL, 0, NULL}};
+
+// Definition of the module
+static struct PyModuleDef classes_module = {
+    PyModuleDef_HEAD_INIT, "classes", NULL, -1, classesMethods, 0, 0, 0, 0,
+};
+
+// Initialization function
+PyMODINIT_FUNC PyInit_classes(void) {
+
+  if (PyType_Ready(&py_some_class_type) < 0)
+    return NULL;
+
+  PyObject *m = PyModule_Create(&classes_module);
+  if (m == NULL)
+    return NULL;
+
+  Py_INCREF(&py_some_class_type);
+  if (PyModule_AddObject(m, "py_some_class", (PyObject *)&py_some_class_type) <
+      0) {
+    Py_DECREF(&py_some_class_type);
+    Py_DECREF(m);
+    return NULL;
+  }
+
+  return m;
+}
+```
+In this case, `py_some_class` is a wrapper around the `some_class` class.
+We have exposed two functions to access two members of the underlying class
+using the `PYEBI_MEMBER_INTERFACE` macro.
+This macro can accept up to seven arguments.
+The first four are mandatory, and correspond to the python object, the accessor
+to the underlying member of the class, the function name and the pointer to the
+member function.
+Additionally you can provide the name of the interface and the name of the
+method definition (set to `<class name>_<function name>_(INTERFACE|DEF)`), as
+well as the docstring.
+Similarly to `PYEBI_INTERFACE`, the arguments must be provided in any of the
+following ways
+1 class, accessor, name, function
+2 class, accessor, name, function and documentation
+3 class, accessor, name, function, definition and documentation
+4 class, accessor, name, function, definition, interface and documentation
+
+### Registering a new type
 
 It is possible to register a new type so the `PYEBI_INTERFACE` function can create the interface and the definition object.
 This is done through the `PYEBI_REGISTER_TYPE` macro, that takes the type (can be a template), the c-conversion function (from `PyObject*` to your type) and the python-conversion type (from your type to `PyObject*`).
@@ -116,8 +278,7 @@ Once this is done, we can expose functions of the type
 my_int return_same(my_int const& i) { return i; }
 ```
 
-Important notes
----------------
+## Important notes
 
 Note that all arguments must be either pointers, `rvalue` or cv-qualified types.
 If you wish to modify the value of a python object, you must define the way to converting it from `PyObject*` to your pointer type and viceversa.
