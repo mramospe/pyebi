@@ -5,6 +5,7 @@
 #include "pyebi/utils.hpp"
 
 #include <tuple>
+#include <type_traits>
 
 namespace pyebi {
 
@@ -20,26 +21,47 @@ namespace pyebi {
 
     /// Input type(s) of a function (without qualifiers)
     template <class... Input, class Output>
-    auto function_input_f(Output (*)(Input...)) {
+    constexpr auto function_input_f(Output (*)(Input...)) {
       return struct_of_args<utils::remove_cvref_t<Input>...>{};
     }
 
     /// Input type(s) of a function (without qualifiers)
     template <class Object, class... Input, class Output>
-    auto function_input_f(Output (Object::*)(Input...)) {
+    constexpr auto function_input_f(Output (Object::*)(Input...)) {
+      return struct_of_args<utils::remove_cvref_t<Input>...>{};
+    }
+
+    /// Input type(s) of a function (without qualifiers)
+    template <class Object, class... Input, class Output>
+    constexpr auto function_input_f(Output (Object::*)(Input...) const) {
       return struct_of_args<utils::remove_cvref_t<Input>...>{};
     }
 
     /// Output type of a function
     template <class... Input, class Output>
-    auto function_output_f(Output (*)(Input...)) {
-      return utils::type_holder<Output>{}; // so we can process "void"
+    constexpr auto function_output_f(Output (*)(Input...)) {
+      if constexpr (std::is_same_v<Output, void>)
+        return utils::type_holder<Output>{}; // so we can process "void"
+      else
+        return utils::remove_cvref<Output>{};
     }
 
     /// Output type of a function
     template <class Object, class... Input, class Output>
-    auto function_output_f(Output (Object::*)(Input...)) {
-      return utils::type_holder<Output>{}; // so we can process "void"
+    constexpr auto function_output_f(Output (Object::*)(Input...)) {
+      if constexpr (std::is_same_v<Output, void>)
+        return utils::type_holder<Output>{}; // so we can process "void"
+      else
+        return utils::remove_cvref<Output>{};
+    }
+
+    /// Output type of a function
+    template <class Object, class... Input, class Output>
+    constexpr auto function_output_f(Output (Object::*)(Input...) const) {
+      if constexpr (std::is_same_v<Output, void>)
+        return utils::type_holder<Output>{}; // so we can process "void"
+      else
+        return utils::remove_cvref<Output>{};
     }
 
     /// Parse the python arguments (implementation)

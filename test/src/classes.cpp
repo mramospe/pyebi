@@ -12,8 +12,8 @@ public:
     m_i = i;
     m_s = s;
   }
-  int integer() { return m_i; }
-  std::string string() { return m_s; }
+  int const &integer() const { return m_i; }
+  std::string const &string() const { return m_s; }
 
 private:
   int m_i;
