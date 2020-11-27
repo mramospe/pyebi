@@ -1,3 +1,9 @@
+trigger:
+  branches:
+    include:
+      - master
+      - devel
+      - azure-pipelines
 stages:
 - stage: test
   jobs:
