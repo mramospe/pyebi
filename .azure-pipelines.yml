@@ -13,6 +13,9 @@ stages:
         Python38:
           python.version: '3.8'
     steps:
+    - task: UsePythonVersion@0
+      inputs:
+        versionSpec: '$(python.version)'
     - script: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
