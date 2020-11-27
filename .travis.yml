@@ -25,6 +25,8 @@ install:
 script: pytest -v
 
 jobs:
+  allow_failures:
+    - stage: format
   include:
     - name: "Python 3.6"
       python: 3.6
@@ -50,6 +52,7 @@ jobs:
           - /devel.*/
       before_install:
         - sudo apt-get install -y clang-format
+        - clang-format --version
       install: " "
       script:
         - scripts/format
