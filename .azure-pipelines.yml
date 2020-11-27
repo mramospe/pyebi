@@ -18,22 +18,32 @@ stages:
         versionSpec: '$(python.version)'
     - script: |
         python -m pip install --upgrade pip
-        pip install -r pyebi/requirements.txt
-    - script: |
-        pip install -r pyebi/test/requirements.txt
         cd pyebi
+      displayName: 'Upgrade pip'
+    - script: |
+        pip install -r requirements.txt
+        pip install -r test/requirements.txt
+      displayName: 'Install dependencies'
+    - script: |
+        pip install .
+      displayName: 'Install package'
+    - script: |
         pytest
+      displayName: 'Run tests'
 - stage: documentation
   jobs:
   - job: documentation
     steps:
     - script: |
-        sudo apt-get install doxygen
+        sudo apt-get install -y doxygen
         doxygen Doxyfile
+      displayName: 'Build documentation'
 - stage: format
   jobs:
   - job: format
     steps:
     - script: |
+        sudo apt-get install -y clang-format
         scripts/format
         scripts/git-diff
+      displayName: 'Check format'
