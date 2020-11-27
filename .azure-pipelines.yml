@@ -1,9 +1,9 @@
-pool:
-  vmImage: 'ubuntu-latest'
 stages:
 - stage: test
   jobs:
   - job: 'pytest'
+    pool:
+      vmImage: 'ubuntu-latest'
     strategy:
       matrix:
         Python36:
@@ -16,6 +16,7 @@ stages:
     - task: UsePythonVersion@0
       inputs:
         versionSpec: '$(python.version)'
+      displayName: 'Test with python version $(python.version)'
     - script: |
         python -m pip install --upgrade pip
         cd pyebi
@@ -24,15 +25,15 @@ stages:
         pip install -r requirements.txt
         pip install -r test/requirements.txt
       displayName: 'Install dependencies'
-    - script: |
-        pip install .
+    - script: pip install .
       displayName: 'Install package'
-    - script: |
-        pytest
+    - script: pytest
       displayName: 'Run tests'
 - stage: documentation
   jobs:
   - job: documentation
+    pool:
+      vmImage: 'ubuntu-latest'
     steps:
     - script: |
         sudo apt-get install -y doxygen
@@ -41,6 +42,8 @@ stages:
 - stage: format
   jobs:
   - job: format
+    pool:
+      vmImage: 'ubuntu-latest'
     steps:
     - script: |
         sudo apt-get install -y clang-format
